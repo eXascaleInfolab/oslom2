@@ -417,6 +417,10 @@ bool static_network::set_graph(string file_name) {
 		
 			int innum1=cast_int(ds[0]);
 			int innum2=cast_int(ds[1]);
+			
+			// Skip self links with zero weights
+			if(ds.size()>=3 && ds[0] == ds[1] && ds[2] == 0)
+				continue;
 					
 			double w=1;
 			int multiple_l=1;
