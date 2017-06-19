@@ -14,8 +14,8 @@ void general_program_statement(char * b) {
 	
 	
 	cout<<"USAGE: "<<b<<" -f network.dat -uw(-w)"<<endl<<endl;
-	cout<<"-uw must be used if you want to use the unweighted null model; -w otherwise."<<endl;
-	cout<<"network.dat is the list of edges. Please look at ReadMe.pdf for more details."<<endl;
+	cout<<"-uw must be used if you want to use the unweighted null model; -w otherwise, default link weight: 1."<<endl;
+	cout<<"network.dat is the list of edges with optional (even for -w) weights. Please look at ReadMe.pdf for more details."<<endl;
 	
 	
 	
