@@ -1,4 +1,4 @@
-
+#include <cstdlib>  // strtoul()
 
 
 // to insert a new parameter there are four steps:
@@ -150,7 +150,7 @@ private:
 	
 	map<string, int> command_flags;
 	bool set_flag_and_number(double & threshold, int & argct, int argc, char * argv[], double min_v, double max_v, string warning);
-	bool set_flag_and_number(int & , int & argct, int argc, char * argv[], int min_v, int max_v, string warning);
+	bool set_flag_and_number(int & , int & argct, int argc, char * argv[], size_t min_v, size_t max_v, string warning, size_t modv=-1);
 	bool set_flag_and_number_external_program(string program_name, int & argct, int & number_to_set, int argc, char * argv[]);
 	
 	
@@ -236,7 +236,7 @@ bool Parameters::set_flag_and_number(double & number_to_set, int & argct, int ar
 
 
 
-bool Parameters::set_flag_and_number(int & number_to_set, int & argct, int argc, char * argv[], int min_v, int max_v, string warning) {
+bool Parameters::set_flag_and_number(int & number_to_set, int & argct, int argc, char * argv[], size_t min_v, size_t max_v, string warning, size_t modv) {
 	
 	argct++;
 	if(argct==argc) {
@@ -246,22 +246,22 @@ bool Parameters::set_flag_and_number(int & number_to_set, int & argct, int argc,
 		return false;
 	}
 	
-	string tt=argv[argct];
-	double ttt;
-	if(cast_string_to_double(tt, ttt)==false) {
-	
-		cout<<"you didn't set any number for the "<<warning<<endl;	
+	const char* tt=argv[argct];
+	size_t val = strtoul(tt, NULL, 10);
+	if(val == 0 && tt[0] != '0') {
+		cout<<"invalid format of the number for the "<<warning<<endl;
 		error_statement(argv[0]);
 		return false;
 	}
 	
-	number_to_set=cast_int(ttt);
-	
-	if(number_to_set<min_v || number_to_set>max_v) {	
+	if(modv != size_t(-1) && modv > min_v)
+		val = val % (modv - min_v) + min_v;
+	if(val<min_v || val>max_v) {
 		cout<<"the "<<warning<<" must be between "<<min_v<<" and "<<max_v<<endl;
 		error_statement(argv[0]);
 		return false;
 	}
+	number_to_set = val;
 		
 	return true;
 	
@@ -491,7 +491,7 @@ bool Parameters::_set_(int argc, char * argv[]) {
 					return false;
 				break;
 			case 10:
-				if(set_flag_and_number(seed_random, argct, argc, argv, 1, R2_IM2, "seed of the random number generator")==false)
+				if(set_flag_and_number(seed_random, argct, argc, argv, 1, R2_IM2, "seed of the random number generator", R2_IM2)==false)
 					return false;
 				break;
 			case 11:
